@@ -68,7 +68,7 @@ contract FileStorage {
         }
         return result;
     }
-
+    // 根据时间 名字查询
     function FindFileNameList(
         string memory fileName,
         uint256 startTime,
@@ -76,28 +76,32 @@ contract FileStorage {
         uint256 startIndex,
         uint256 size
     ) public view returns (string[] memory) {
-
+        // 获取该地址有的存储
         uint256[] memory kl = getTimelist(msg.sender);
+        // 根据时间遍历查询key值
         if (startTime < endTime && endTime > 0) {
             kl = getListIndex(startTime, endTime);
             if (kl.length == 0) {
                 return new string[](0);
             }
         }
+
         // 获取匹配的数组
         uint256[] memory res = filterListBySubStr(fileName,kl);
         uint256 j = 0;
-         string[] memory result;
+        string[] memory result;
        
         uint256 len = res.length - 1 - startIndex;
         if(len <= 0){
            return new string[](0); 
         }
+        // 先根据原有数组长度和起始位置判断是否够预计需要查询的长度
         if (len > size){
             result = new string[](size);
         }else{
             result = new string[](len);
         }
+        // 开始遍历赋值
         for (uint256 i = len; i >= 0; i--) {
             result[j] = newMapFileInfo(res[i]).fileName;
             if(j == result.length){
@@ -119,6 +123,7 @@ contract FileStorage {
 
     // ########## 以下为查询的工具函数 ##########
 
+    // 根据字符条件，匹配过滤数组
     function filterListBySubStr(
         string memory subName,uint256[] memory kl 
     ) internal view returns (uint256[] memory) {
@@ -128,15 +133,16 @@ contract FileStorage {
         }
         uint256 len = 0;
         uint256[] memory buf = new uint256[](klen);
+        // 遍历过滤符合条件的查询
         for (uint256 i = 0; i < klen; i++) {
             uint256 tsp = kl[i];
-
             bool isMatched = contains(files[msg.sender][tsp].fileName, subName);
             if (isMatched) {
                 buf[len] = tsp;
                 len++;
             }
         }
+        // 截取有效的数组部分
         uint256[] memory res = new uint256[](len);
         if (len != 0) {
             for (uint256 i = 0; i < len; i++) {
