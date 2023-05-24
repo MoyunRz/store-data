@@ -50,47 +50,63 @@ contract ChatStorage {
         uint256[] memory res = filterListBySubStr(ps, kl);
         uint256 j = 0;
         ChatInfo[] memory result = new ChatInfo[](res.length);
-        for (uint256 i = res.length - 1; i >= 0; i--) {
-            result[j++] = newMapChatInfo(res[i]);
+
+        for (uint256 i = res.length - 1; j < res.length; ) {
+            result[j] = newMapChatInfo(res[i]);
+            j++;
+            if (i==0) {
+               return result;
+            }else{
+                i--;
+            }
         }
         return result;
     }
 
-    function FindChatNameList(
-        string memory ps,
+    // 根据时间 名字查询
+    function FindChatHistory(
+        string memory fileName,
         uint256 startTime,
         uint256 endTime,
         uint256 startIndex,
         uint256 size
-    ) public view returns (string[] memory) {
+    ) public view returns (ChatInfo[] memory) {
+        // 获取该地址有的存储
         uint256[] memory kl = getTimelist(msg.sender);
+        // 根据时间遍历查询key值
         if (startTime < endTime && endTime > 0) {
             kl = getListIndex(startTime, endTime);
             if (kl.length == 0) {
-                return new string[](0);
+                return new ChatInfo[](0);
             }
         }
-
         // 获取匹配的数组
-        uint256[] memory res = filterListBySubStr(ps, kl);
+        uint256[] memory res = filterListBySubStr(fileName, kl);
         uint256 j = 0;
-        string[] memory result;
+        ChatInfo[] memory result;
 
-        uint256 len = res.length - 1 - startIndex;
+        uint256 len = res.length - startIndex;
         if (len <= 0) {
-            return new string[](0);
+            return new ChatInfo[](0);
         }
-        if (len > size) {
-            result = new string[](size);
+        // 先根据原有数组长度和起始位置判断是否够预计需要查询的长度
+        if (len > size && size > 0) {
+            result = new ChatInfo[](size);
         } else {
-            result = new string[](len);
+            result = new ChatInfo[](len);
         }
-        for (uint256 i = len; i >= 0; i--) {
-            result[j] = newMapChatInfo(res[i]).ps;
-            if (j == result.length) {
+        // 开始遍历赋值
+        for (uint256 i = len - 1; j < res.length; ) {
+            result[j] = newMapChatInfo(res[i]);
+            if (j == result.length - 1) {
                 return result;
             }
             j++;
+            if (i == 0) {
+                return result;
+            } else {
+                i--;
+            }
         }
         return result;
     }

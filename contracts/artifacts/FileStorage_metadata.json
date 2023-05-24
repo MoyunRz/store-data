@@ -47,21 +47,7 @@
 						"internalType": "string",
 						"name": "fileName",
 						"type": "string"
-					}
-				],
-				"name": "getNameListBySubStr",
-				"outputs": [
-					{
-						"internalType": "string[]",
-						"name": "",
-						"type": "string[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
+					},
 					{
 						"internalType": "uint256",
 						"name": "startTime",
@@ -71,9 +57,19 @@
 						"internalType": "uint256",
 						"name": "endTime",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "startIndex",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "size",
+						"type": "uint256"
 					}
 				],
-				"name": "getNameListByTime",
+				"name": "FindFileNameList",
 				"outputs": [
 					{
 						"internalType": "string[]",
@@ -90,9 +86,19 @@
 						"internalType": "string",
 						"name": "fileName",
 						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "startTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "endTime",
+						"type": "uint256"
 					}
 				],
-				"name": "getStorageByName",
+				"name": "FindFileStorage",
 				"outputs": [
 					{
 						"components": [
@@ -128,17 +134,36 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "startTime",
-						"type": "uint256"
+						"internalType": "string",
+						"name": "str",
+						"type": "string"
 					},
 					{
+						"internalType": "string",
+						"name": "substr",
+						"type": "string"
+					}
+				],
+				"name": "contains",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
-						"name": "endTime",
+						"name": "tsp",
 						"type": "uint256"
 					}
 				],
-				"name": "getStorageByTime",
+				"name": "newMapFileInfo",
 				"outputs": [
 					{
 						"components": [
@@ -163,9 +188,9 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct FileStorage.FileInfo[]",
+						"internalType": "struct FileStorage.FileInfo",
 						"name": "",
-						"type": "tuple[]"
+						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -223,11 +248,11 @@
 	},
 	"sources": {
 		"contracts/FileStorage.sol": {
-			"keccak256": "0x3768522c5230d82d589a90cbc28bd4257ae4b0129b2f73d5abd2ea1581d1b373",
+			"keccak256": "0xd6e9fa1e5e14d19300f18ec43d981739ef01f546d53d6227a0051e2a68a7e582",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b91881e8691e942165357366fd5e188e154c2a82fca14adbdb74c16d0f29a0b4",
-				"dweb:/ipfs/QmZGLmmmAvt39RopErYzVMtfw5LfUeEr2gYpUpSffe4any"
+				"bzz-raw://b71b8ab618000d69b3c517e582ae09fc25352ac13f20a6571b657f266dcebcbe",
+				"dweb:/ipfs/QmPRth5hz5qJ4KAuuGASofnN2NngiYFCSoC6znCJmYTS6W"
 			]
 		}
 	},

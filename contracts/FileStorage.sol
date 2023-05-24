@@ -9,7 +9,6 @@ contract FileStorage {
         string fileContent;
         uint256 timestamp;
     }
-
     // uint256 记录键值，减少大面积查询，避免耽误查询时间
     mapping(address => uint256[]) timelist;
 
@@ -50,7 +49,6 @@ contract FileStorage {
         uint256 startTime,
         uint256 endTime
     ) public view returns (FileInfo[] memory) {
-
         uint256[] memory kl = getTimelist(msg.sender);
         if (startTime < endTime && endTime > 0) {
             kl = getListIndex(startTime, endTime);
@@ -59,73 +57,85 @@ contract FileStorage {
             }
         }
         // 获取匹配的数组
-        uint256[] memory res = filterListBySubStr(fileName,kl);
-
+        uint256[] memory res = filterListBySubStr(fileName, kl);
+        if (res.length == 0) {
+            return new FileInfo[](0);
+        }
         uint256 j = 0;
         FileInfo[] memory result = new FileInfo[](res.length);
-        for (uint256 i = res.length - 1; i >= 0; i--) {
-            result[j++] = newMapFileInfo(res[i]);
+        for (uint256 i = res.length - 1; j < res.length; ) {
+            result[j] = newMapFileInfo(res[i]);
+            j++;
+            if (i == 0) {
+                return result;
+            } else {
+                i--;
+            }
         }
         return result;
     }
+
     // 根据时间 名字查询
-    function FindFileNameList(
+    function FindFileHistory(
         string memory fileName,
         uint256 startTime,
         uint256 endTime,
         uint256 startIndex,
         uint256 size
-    ) public view returns (string[] memory) {
+    ) public view returns (FileInfo[] memory) {
         // 获取该地址有的存储
         uint256[] memory kl = getTimelist(msg.sender);
         // 根据时间遍历查询key值
         if (startTime < endTime && endTime > 0) {
             kl = getListIndex(startTime, endTime);
             if (kl.length == 0) {
-                return new string[](0);
+                return new FileInfo[](0);
             }
         }
 
         // 获取匹配的数组
-        uint256[] memory res = filterListBySubStr(fileName,kl);
+        uint256[] memory res = filterListBySubStr(fileName, kl);
         uint256 j = 0;
-        string[] memory result;
-       
-        uint256 len = res.length - 1 - startIndex;
-        if(len <= 0){
-           return new string[](0); 
+        FileInfo[] memory result;
+
+        uint256 len = res.length - startIndex;
+        if (len <= 0) {
+            return new FileInfo[](0);
         }
         // 先根据原有数组长度和起始位置判断是否够预计需要查询的长度
-        if (len > size){
-            result = new string[](size);
-        }else{
-            result = new string[](len);
+        if (len > size && size > 0) {
+            result = new FileInfo[](size);
+        } else {
+            result = new FileInfo[](len);
         }
         // 开始遍历赋值
-        for (uint256 i = len; i >= 0; i--) {
-            result[j] = newMapFileInfo(res[i]).fileName;
-            if(j == result.length){
+        for (uint256 i = len - 1; j < res.length; ) {
+            result[j] = newMapFileInfo(res[i]);
+            if (j == result.length - 1) {
                 return result;
             }
             j++;
+            if (i == 0) {
+                return result;
+            } else {
+                i--;
+            }
         }
         return result;
     }
 
     // 根据时间戳获取文件内容
-    function newMapFileInfo(
-        uint256 tsp
-    ) public view returns (FileInfo memory) {
+    function newMapFileInfo(uint256 tsp) public view returns (FileInfo memory) {
         FileInfo memory file = files[msg.sender][tsp];
         return file;
     }
-
 
     // ########## 以下为查询的工具函数 ##########
 
     // 根据字符条件，匹配过滤数组
     function filterListBySubStr(
-        string memory subName,uint256[] memory kl 
+        string memory subName,
+        uint256[] memory kl
     ) internal view returns (uint256[] memory) {
         uint256 klen = kl.length;
         if (bytes(subName).length == 0 || klen == 0) {
@@ -186,8 +196,7 @@ contract FileStorage {
     function contains(
         string memory str,
         string memory substr
-    ) public pure returns (bool) {
-        
+    ) private pure returns (bool) {
         bytes memory bStr = bytes(str);
         bytes memory bSubstr = bytes(substr);
         if (bSubstr.length > bStr.length) {
