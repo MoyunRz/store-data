@@ -1,0 +1,235 @@
+{
+	"compiler": {
+		"version": "0.8.6+commit.11564f7e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "fileName",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "fileType",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "fileContent",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"name": "FileStored",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "fileName",
+						"type": "string"
+					}
+				],
+				"name": "getNameListBySubStr",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "startTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "endTime",
+						"type": "uint256"
+					}
+				],
+				"name": "getNameListByTime",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "fileName",
+						"type": "string"
+					}
+				],
+				"name": "getStorageByName",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "fileName",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "fileType",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "fileContent",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestamp",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct FileStorage.FileInfo[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "startTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "endTime",
+						"type": "uint256"
+					}
+				],
+				"name": "getStorageByTime",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "fileName",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "fileType",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "fileContent",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestamp",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct FileStorage.FileInfo[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "fileName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "fileType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "fileContent",
+						"type": "string"
+					}
+				],
+				"name": "storeFile",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/FileStorage.sol": "FileStorage"
+		},
+		"evmVersion": "berlin",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/FileStorage.sol": {
+			"keccak256": "0x3768522c5230d82d589a90cbc28bd4257ae4b0129b2f73d5abd2ea1581d1b373",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b91881e8691e942165357366fd5e188e154c2a82fca14adbdb74c16d0f29a0b4",
+				"dweb:/ipfs/QmZGLmmmAvt39RopErYzVMtfw5LfUeEr2gYpUpSffe4any"
+			]
+		}
+	},
+	"version": 1
+}
