@@ -2,8 +2,9 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "./Crypts.sol";
+import "./Utils.sol";
 
-contract FileStorage is Crypts {
+contract FileStorage is Crypts,Utils {
     // 构建文件内容存储结构体
     struct FileInfo {
         string fileName;    // 文件名字，如：文件.txt
@@ -140,8 +141,6 @@ contract FileStorage is Crypts {
         });
     }
 
-    // ########## 以下为查询的工具函数 ##########
-
     // 根据字符条件，匹配过滤数组
     function filterListBySubStr(
         string memory subName,
@@ -202,31 +201,4 @@ contract FileStorage is Crypts {
         return timelist[key];
     }
 
-    // 匹配函数
-    function contains(
-        string memory str,
-        string memory substr
-    ) private pure returns (bool) {
-        bytes memory bStr = bytes(str);
-        bytes memory bSubstr = bytes(substr);
-        if (bSubstr.length > bStr.length) {
-            return false;
-        } else if (bSubstr.length == bStr.length) {
-            return keccak256(bStr) == keccak256(bSubstr);
-        } else {
-            for (uint i = 0; i < bStr.length - bSubstr.length + 1; i++) {
-                bool found = true;
-                for (uint j = 0; j < bSubstr.length; j++) {
-                    if (bStr[i + j] != bSubstr[j]) {
-                        found = false;
-                        break;
-                    }
-                }
-                if (found) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
 }

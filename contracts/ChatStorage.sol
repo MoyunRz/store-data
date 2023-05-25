@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 import "./Crypts.sol";
+import "./Utils.sol";
 
-contract ChatStorage is Crypts {
+// 聊天内容存储合约
+contract ChatStorage is Crypts,Utils {
     // 构建文件内容存储结构体
     struct ChatInfo {
-        string ps;
-        string content;
-        uint256 timestamp;
+        string ps;          // 聊天信息备注 便于查询
+        string content;     // 聊天内容
+        uint256 timestamp;  // 时间戳
     }
 
     // uint256 记录键值，减少大面积查询，避免耽误查询时间
@@ -180,33 +182,5 @@ contract ChatStorage is Crypts {
 
     function getTimelist(address key) internal view returns (uint256[] memory) {
         return timelist[key];
-    }
-
-    // 匹配函数
-    function contains(
-        string memory str,
-        string memory substr
-    ) public pure returns (bool) {
-        bytes memory bStr = bytes(str);
-        bytes memory bSubstr = bytes(substr);
-        if (bSubstr.length > bStr.length) {
-            return false;
-        } else if (bSubstr.length == bStr.length) {
-            return keccak256(bStr) == keccak256(bSubstr);
-        } else {
-            for (uint i = 0; i < bStr.length - bSubstr.length + 1; i++) {
-                bool found = true;
-                for (uint j = 0; j < bSubstr.length; j++) {
-                    if (bStr[i + j] != bSubstr[j]) {
-                        found = false;
-                        break;
-                    }
-                }
-                if (found) {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }
