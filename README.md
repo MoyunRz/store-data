@@ -26,6 +26,8 @@ networks: {
 
 ## 运行测试
 
+测试文件在 test/*.js 中，运行测试文件如下：
+
 ```shell
 npm i
 ```
