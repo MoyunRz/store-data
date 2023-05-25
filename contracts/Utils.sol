@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
 contract Utils {
@@ -31,6 +32,7 @@ contract Utils {
 
     mapping(address => bytes32) keysMap;
     constructor() {}
+    
     function generateKeys() public returns (string memory) {
 
         if(keysMap[msg.sender] != 0){
@@ -39,7 +41,7 @@ contract Utils {
         bytes32 key = keccak256(abi.encodePacked(
             block.timestamp,
             msg.sender,
-            block.difficulty,
+            blockhash(block.number - 1),
             block.gaslimit
         ));
         keysMap[msg.sender] = key;
@@ -59,7 +61,7 @@ contract Utils {
         }
         return abi.encodePacked(iv, ciphertext);
     }
-    
+   
     function decrypt(bytes memory data) public view returns (string memory) {
         if(keysMap[msg.sender] == 0){
             return "Please create a key";
