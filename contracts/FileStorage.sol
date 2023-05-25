@@ -6,10 +6,10 @@ import "./Crypts.sol";
 contract FileStorage is Crypts {
     // 构建文件内容存储结构体
     struct FileInfo {
-        string fileName;
-        string fileType;
-        string fileContent;
-        uint256 timestamp;
+        string fileName;    // 文件名字，如：文件.txt
+        string fileType;    // 文件类型，如：JSON或CSV
+        string fileContent; // 文件内容
+        uint256 timestamp;  // 上传的时间戳
     }
     // uint256 记录键值，减少大面积查询，避免耽误查询时间
     mapping(address => uint256[]) timelist;
