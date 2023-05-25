@@ -7,8 +7,8 @@
 ```
  |---contracts
       |--- ChatStorage.sol 存储聊天内容合约 
-      |--- Crypts.sol 加密工具合约 包含加密的工具函数
       |--- FileStorage.sol 文件内容存储合约
+      |--- Utils.sol 工具合约 加密工具、内容匹配工具
 ``
 
 ## 项目依赖
