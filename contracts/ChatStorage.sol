@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
+import "./Crypts.sol";
 
-contract ChatStorage {
+contract ChatStorage is Crypts {
     // 构建文件内容存储结构体
     struct ChatInfo {
         string ps;
@@ -15,22 +16,24 @@ contract ChatStorage {
     // uint256 是时间戳，如：1684832014
     mapping(address => mapping(uint256 => ChatInfo)) chats;
 
-    event ChatStored(string ps, string content, uint256 timestamp);
+    event ChatStored(string ps, bytes content, uint256 timestamp);
 
     // 初始化函数
     constructor() {}
 
     // 存储文件内容
     function storeChat(string memory ps, string memory content) public {
+        generateKeys();
+        bytes memory encrypt_content = encrypt(content);
         uint256 timestamp = block.timestamp; //获取当前区块链时间戳
         address caller = msg.sender; //获取调用者地址
         chats[caller][timestamp] = ChatInfo({
             ps: ps,
-            content: content,
+            content: string(encrypt_content),
             timestamp: timestamp
         });
         timelist[caller].push(timestamp);
-        emit ChatStored(ps, content, timestamp);
+        emit ChatStored(ps, encrypt_content, timestamp);
     }
 
     // 查询
@@ -114,7 +117,11 @@ contract ChatStorage {
     // 根据时间戳获取文件内容
     function newMapChatInfo(uint256 tsp) public view returns (ChatInfo memory) {
         ChatInfo memory chat = chats[msg.sender][tsp];
-        return chat;
+        return ChatInfo({
+             ps:chat.ps,
+             content: decrypt(bytes(chat.content)),
+             timestamp:chat.timestamp
+        });
     }
     // 数组过滤
     function filterListBySubStr(
