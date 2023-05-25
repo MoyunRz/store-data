@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
-import "./Crypts.sol";
 import "./Utils.sol";
 
 // 聊天内容存储合约
-contract ChatStorage is Crypts,Utils {
+contract ChatStorage is Utils {
     // 构建文件内容存储结构体
     struct ChatInfo {
         string ps;          // 聊天信息备注 便于查询

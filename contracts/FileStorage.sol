@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "./Crypts.sol";
 import "./Utils.sol";
 
-contract FileStorage is Crypts,Utils {
+contract FileStorage is Utils  {
     // 构建文件内容存储结构体
     struct FileInfo {
         string fileName;    // 文件名字，如：文件.txt
