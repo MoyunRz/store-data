@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-contract FileStorage {
+import "./Crypts.sol";
+
+contract FileStorage is Crypts {
     // 构建文件内容存储结构体
     struct FileInfo {
         string fileName;
@@ -19,7 +21,7 @@ contract FileStorage {
     event FileStored(
         string fileName,
         string fileType,
-        string fileContent,
+        bytes fileContent,
         uint256 timestamp
     );
 
@@ -32,16 +34,19 @@ contract FileStorage {
         string memory fileType,
         string memory fileContent
     ) public {
+        generateKeys();
+        bytes memory content = encrypt(fileContent);
         uint256 timestamp = block.timestamp; //获取当前区块链时间戳
         address caller = msg.sender; //获取调用者地址
-        files[caller][timestamp] = FileInfo({
+        FileInfo memory file =  FileInfo({
             fileName: fileName,
             fileType: fileType,
-            fileContent: fileContent,
+            fileContent: string(content),
             timestamp: timestamp
         });
+        files[caller][timestamp] = file;
         timelist[caller].push(timestamp);
-        emit FileStored(fileName, fileType, fileContent, timestamp);
+        emit FileStored(fileName, fileType, content, timestamp);
     }
 
     function FindFileStorage(
@@ -127,7 +132,12 @@ contract FileStorage {
     // 根据时间戳获取文件内容
     function newMapFileInfo(uint256 tsp) public view returns (FileInfo memory) {
         FileInfo memory file = files[msg.sender][tsp];
-        return file;
+        return FileInfo({
+             fileName:file.fileName,
+             fileType:file.fileType,
+             fileContent: decrypt(bytes(file.fileContent)),
+             timestamp:file.timestamp
+        });
     }
 
     // ########## 以下为查询的工具函数 ##########
