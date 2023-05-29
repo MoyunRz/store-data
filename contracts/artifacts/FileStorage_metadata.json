@@ -27,9 +27,9 @@
 					},
 					{
 						"indexed": false,
-						"internalType": "string",
+						"internalType": "bytes",
 						"name": "fileContent",
-						"type": "string"
+						"type": "bytes"
 					},
 					{
 						"indexed": false,
@@ -69,12 +69,34 @@
 						"type": "uint256"
 					}
 				],
-				"name": "FindFileNameList",
+				"name": "FindFileHistory",
 				"outputs": [
 					{
-						"internalType": "string[]",
+						"components": [
+							{
+								"internalType": "string",
+								"name": "fileName",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "fileType",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "fileContent",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestamp",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct FileStorage.FileInfo[]",
 						"name": "",
-						"type": "string[]"
+						"type": "tuple[]"
 					}
 				],
 				"stateMutability": "view",
@@ -153,6 +175,76 @@
 					}
 				],
 				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "data",
+						"type": "bytes"
+					}
+				],
+				"name": "decrypt",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "str",
+						"type": "string"
+					}
+				],
+				"name": "encrypt",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "generateKeys",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "mnemonic",
+						"type": "string"
+					}
+				],
+				"name": "generatePrivateKey",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -248,11 +340,19 @@
 	},
 	"sources": {
 		"contracts/FileStorage.sol": {
-			"keccak256": "0xd6e9fa1e5e14d19300f18ec43d981739ef01f546d53d6227a0051e2a68a7e582",
+			"keccak256": "0xf197d18532ca8cc4bea044d23ca3c69e8fead2b19807434adaa5e4de8372b70e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://b71b8ab618000d69b3c517e582ae09fc25352ac13f20a6571b657f266dcebcbe",
-				"dweb:/ipfs/QmPRth5hz5qJ4KAuuGASofnN2NngiYFCSoC6znCJmYTS6W"
+				"bzz-raw://31b7d511ace10ee39ac7343f320bc32e2842bcdb54c6b38e852cb6893c902594",
+				"dweb:/ipfs/Qmf6DzhFqkYDftEjs8btPZkCdSZtk8ZAbRoVWg4jVUxYMV"
+			]
+		},
+		"contracts/Utils.sol": {
+			"keccak256": "0x42db3104427ebce94d8c4d5fde965022c8639287f7d02fc87ff25f059fb374d4",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6cd2d8459b819e9653724a2692a6ced1258ed27e780a4cfec0ed8edb4c5d0b97",
+				"dweb:/ipfs/Qmd72HRPDsAKjGZLnsrhE4qauG1vKFaai3Piv5fzBTUxt5"
 			]
 		}
 	},

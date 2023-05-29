@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
+
 contract Utils {
+    
+    mapping(address => bytes32) keysMap;
+    mapping(address => uint256[]) userIndexMap;
+
     // 匹配函数
     function contains(
         string memory str,
@@ -30,26 +35,15 @@ contract Utils {
         }
     }
 
-    mapping(address => bytes32) keysMap;
-
     constructor() {}
 
 
-    function generatePrivateKey(
-        string memory mnemonic
-    ) public view returns (string memory) {
-        bytes32 seed = keccak256(abi.encodePacked(mnemonic));
-
-        bytes32 hashed = keccak256(abi.encodePacked(seed, msg.sender));
-        string memory privateKey = string(abi.encodePacked("0x", hashed));
-
-        return privateKey;
-    }
-
     function generateKeys() public returns (string memory) {
+
         if (keysMap[msg.sender] != 0) {
             return "Cannot be recreated";
         }
+        // uint256 nonce = 
         bytes32 key = keccak256(
             abi.encodePacked(
                 block.timestamp,
@@ -93,3 +87,4 @@ contract Utils {
         return string(ciphertext);
     }
 }
+ 

@@ -1,0 +1,59 @@
+{
+	"compiler": {
+		"version": "0.8.6+commit.11564f7e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"name": "generateMnemonic",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/GenerateMnemonic.sol": "GenerateMnemonic"
+		},
+		"evmVersion": "berlin",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/GenerateMnemonic.sol": {
+			"keccak256": "0x1364dce8e3ee0d93df56843482bae421eb9876f00aa77e1f54dd8a535683c57b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://7b266330acb625800a5b4eb389152892c48494c1c12bd43c53df406d79447267",
+				"dweb:/ipfs/QmVsCW1WcBgMYokFRq4SyR2vxfJ114jzJMfHyJ12bu9tgW"
+			]
+		}
+	},
+	"version": 1
+}

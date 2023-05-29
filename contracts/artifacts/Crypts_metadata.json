@@ -1,0 +1,75 @@
+{
+	"compiler": {
+		"version": "0.8.6+commit.11564f7e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "mnemonic",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "indexes",
+						"type": "uint256[]"
+					},
+					{
+						"internalType": "string",
+						"name": "path",
+						"type": "string"
+					}
+				],
+				"name": "generatePrivateKey",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/Crypts.sol": "Crypts"
+		},
+		"evmVersion": "berlin",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/Crypts.sol": {
+			"keccak256": "0x358c3a4ec6c45b8cc6bc2cdc1154b6fa4a193ba433338b7e8ec246e93bcd1257",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8017f40e953d6e1acff83eb62a9415e2e65ad896fb123b3576824bbee7614333",
+				"dweb:/ipfs/QmXMYYDXEkkTapEvXqYMWXNtLhPuLfGqkEAHy9PeQE4PcB"
+			]
+		}
+	},
+	"version": 1
+}

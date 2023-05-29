@@ -1,66 +1,64 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
+
 import "./Utils.sol";
+import "./Storages.sol";
 
-// 聊天内容存储合约
-contract ChatStorage is Utils {
-    // 构建文件内容存储结构体
-    struct ChatInfo {
-        string ps;          // 聊天信息备注 便于查询
-        string content;     // 聊天内容
-        uint256 timestamp;  // 时间戳
-    }
-
-    // uint256 记录键值，减少大面积查询，避免耽误查询时间
-    mapping(address => uint256[]) timelist;
-    // 用于存储数据的映射
-    // uint256 是时间戳，如：1684832014
-    mapping(address => mapping(uint256 => ChatInfo)) chats;
-
-    event ChatStored(string ps, bytes content, uint256 timestamp);
-
+contract DataStorage is Utils,Storages  {
+   
+    event FileStored(
+        string fileName,
+        string fileType,
+        bytes fileContent,
+        uint256 timestamp
+    );
     // 初始化函数
     constructor() {}
 
     // 存储文件内容
-    function storeChat(string memory ps, string memory content) public {
+    function storeFile(
+        string memory name,
+        string memory dataType,
+        string memory dataContent
+    ) public {
         generateKeys();
-        bytes memory encrypt_content = encrypt(content);
+        bytes memory content = encrypt(dataContent);
         uint256 timestamp = block.timestamp; //获取当前区块链时间戳
-        address caller = msg.sender; //获取调用者地址
-        chats[caller][timestamp] = ChatInfo({
-            ps: ps,
-            content: string(encrypt_content),
+        StorageInfo memory info =  StorageInfo({
+            name: name,
+            dataType: dataType,
+            content: string(content),
             timestamp: timestamp
         });
-        timelist[caller].push(timestamp);
-        emit ChatStored(ps, encrypt_content, timestamp);
+        setStorage(info);
+        emit FileStored(name, dataType, content, timestamp);
     }
 
-    // 查询
-    function FindChatStorage(
-        string memory ps,
+    function FindFileStorage(
+        string memory fileName,
         uint256 startTime,
         uint256 endTime
-    ) public view returns (ChatInfo[] memory) {
+    ) public view returns (StorageInfo[] memory) {
         uint256[] memory kl = getTimelist(msg.sender);
         if (startTime < endTime && endTime > 0) {
             kl = getListIndex(startTime, endTime);
             if (kl.length == 0) {
-                return new ChatInfo[](0);
+                return new StorageInfo[](0);
             }
         }
         // 获取匹配的数组
-        uint256[] memory res = filterListBySubStr(ps, kl);
+        uint256[] memory res = filterListBySubStr(fileName, kl);
+        if (res.length == 0) {
+            return new StorageInfo[](0);
+        }
         uint256 j = 0;
-        ChatInfo[] memory result = new ChatInfo[](res.length);
-
+        StorageInfo[] memory result = new StorageInfo[](res.length);
         for (uint256 i = res.length - 1; j < res.length; ) {
-            result[j] = newMapChatInfo(res[i]);
+            result[j] = newMapStorageInfo(res[i]);
             j++;
-            if (i==0) {
-               return result;
-            }else{
+            if (i == 0) {
+                return result;
+            } else {
                 i--;
             }
         }
@@ -68,40 +66,40 @@ contract ChatStorage is Utils {
     }
 
     // 根据时间 名字查询
-    function FindChatHistory(
+    function FindFileHistory(
         string memory fileName,
         uint256 startTime,
         uint256 endTime,
         uint256 startIndex,
         uint256 size
-    ) public view returns (ChatInfo[] memory) {
+    ) public view returns (StorageInfo[] memory) {
         // 获取该地址有的存储
         uint256[] memory kl = getTimelist(msg.sender);
         // 根据时间遍历查询key值
         if (startTime < endTime && endTime > 0) {
             kl = getListIndex(startTime, endTime);
             if (kl.length == 0) {
-                return new ChatInfo[](0);
+                return new StorageInfo[](0);
             }
         }
         // 获取匹配的数组
         uint256[] memory res = filterListBySubStr(fileName, kl);
         uint256 j = 0;
-        ChatInfo[] memory result;
+        StorageInfo[] memory result;
 
         uint256 len = res.length - startIndex;
         if (len <= 0) {
-            return new ChatInfo[](0);
+            return new StorageInfo[](0);
         }
         // 先根据原有数组长度和起始位置判断是否够预计需要查询的长度
         if (len > size && size > 0) {
-            result = new ChatInfo[](size);
+            result = new StorageInfo[](size);
         } else {
-            result = new ChatInfo[](len);
+            result = new StorageInfo[](len);
         }
         // 开始遍历赋值
         for (uint256 i = len - 1; j < res.length; ) {
-            result[j] = newMapChatInfo(res[i]);
+            result[j] = newMapStorageInfo(res[i]);
             if (j == result.length - 1) {
                 return result;
             }
@@ -116,15 +114,17 @@ contract ChatStorage is Utils {
     }
 
     // 根据时间戳获取文件内容
-    function newMapChatInfo(uint256 tsp) public view returns (ChatInfo memory) {
-        ChatInfo memory chat = chats[msg.sender][tsp];
-        return ChatInfo({
-             ps:chat.ps,
-             content: decrypt(bytes(chat.content)),
-             timestamp:chat.timestamp
+    function newMapStorageInfo(uint256 tsp) public view returns (StorageInfo memory) {
+        StorageInfo memory file = getStorage(msg.sender,tsp);
+        return StorageInfo({
+             name:file.name,
+             dataType:file.dataType,
+             content: decrypt(bytes(file.content)),
+             timestamp:file.timestamp
         });
     }
-    // 数组过滤
+
+    // 根据字符条件，匹配过滤数组
     function filterListBySubStr(
         string memory subName,
         uint256[] memory kl
@@ -135,14 +135,16 @@ contract ChatStorage is Utils {
         }
         uint256 len = 0;
         uint256[] memory buf = new uint256[](klen);
+        // 遍历过滤符合条件的查询
         for (uint256 i = 0; i < klen; i++) {
             uint256 tsp = kl[i];
-            bool isMatched = contains(chats[msg.sender][tsp].ps, subName);
+            bool isMatched = contains(getStorage(msg.sender,tsp).name, subName);
             if (isMatched) {
                 buf[len] = tsp;
                 len++;
             }
         }
+        // 截取有效的数组部分
         uint256[] memory res = new uint256[](len);
         if (len != 0) {
             for (uint256 i = 0; i < len; i++) {
@@ -166,7 +168,6 @@ contract ChatStorage is Utils {
                 end = i;
             }
         }
-
         uint256[] memory result = new uint256[](length);
         if (length != 0) {
             end += 1;
@@ -179,7 +180,4 @@ contract ChatStorage is Utils {
         return result;
     }
 
-    function getTimelist(address key) internal view returns (uint256[] memory) {
-        return timelist[key];
-    }
 }
