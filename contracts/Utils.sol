@@ -7,6 +7,7 @@ contract Utils {
     mapping(address => bytes32) keysMap;
     mapping(address => uint256[]) userIndexMap;
 
+    constructor() {}
     // 匹配函数
     function contains(
         string memory str,
@@ -35,7 +36,10 @@ contract Utils {
         }
     }
 
-    constructor() {}
+    function calculateMD5(string memory _text) public pure returns (bytes32) {
+        bytes32 hash = keccak256(bytes(_text));
+        return hash;
+    }
 
 
     function generateKeys() public returns (string memory) {
