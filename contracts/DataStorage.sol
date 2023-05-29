@@ -4,35 +4,41 @@ pragma solidity >=0.8.0 <0.9.0;
 import "./Utils.sol";
 import "./Storages.sol";
 
-contract DataStorage is Utils,Storages  {
-   
+contract DataStorage is Utils, Storages {
+
     event FileStored(
         string name,
         string dataType,
         string content,
+        bytes32 md5,
+        address pubAddress,
         uint256 timestamp
     );
+
     // 初始化函数
     constructor() {}
-
     // 存储文件内容
     function storeFile(
         string memory name,
         string memory dataType,
-        string memory content
+        string memory content,
+        address pubAddress
     ) public {
-        generateKeys();
+        bytes32 md5 = calculateMD5(content);
         uint256 timestamp = block.timestamp; //获取当前区块链时间戳
-        StorageInfo memory info =  StorageInfo({
+        StorageInfo memory info = StorageInfo({
             name: name,
             dataType: dataType,
             content: content,
+            md5: md5,
+            pubAddress: msg.sender,
             timestamp: timestamp
         });
         setStorage(info);
-        emit FileStored(name, dataType, content, timestamp);
+        emit FileStored(name, dataType, content, md5, pubAddress, timestamp);
     }
 
+    // 查询数据信息
     function FindFileStorage(
         string memory fileName,
         uint256 startTime,
@@ -113,14 +119,19 @@ contract DataStorage is Utils,Storages  {
     }
 
     // 根据时间戳获取文件内容
-    function newMapStorageInfo(uint256 tsp) public view returns (StorageInfo memory) {
-        StorageInfo memory file = getStorage(msg.sender,tsp);
-        return StorageInfo({
-             name:file.name,
-             dataType:file.dataType,
-             content: decrypt(bytes(file.content)),
-             timestamp:file.timestamp
-        });
+    function newMapStorageInfo(
+        uint256 tsp
+    ) public view returns (StorageInfo memory) {
+        StorageInfo memory data = getStorage(msg.sender, tsp);
+        return
+            StorageInfo({
+                name: data.name,
+                dataType: data.dataType,
+                content: data.content,
+                md5: data.md5,
+                pubAddress: data.pubAddress,
+                timestamp: data.timestamp
+            });
     }
 
     // 根据字符条件，匹配过滤数组
@@ -137,7 +148,10 @@ contract DataStorage is Utils,Storages  {
         // 遍历过滤符合条件的查询
         for (uint256 i = 0; i < klen; i++) {
             uint256 tsp = kl[i];
-            bool isMatched = contains(getStorage(msg.sender,tsp).name, subName);
+            bool isMatched = contains(
+                getStorage(msg.sender, tsp).name,
+                subName
+            );
             if (isMatched) {
                 buf[len] = tsp;
                 len++;
@@ -153,6 +167,7 @@ contract DataStorage is Utils,Storages  {
         return res;
     }
 
+    // 根据时间进行查询
     function getListIndex(
         uint256 startTime,
         uint256 endTime
