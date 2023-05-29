@@ -7,9 +7,9 @@ import "./Storages.sol";
 contract DataStorage is Utils,Storages  {
    
     event FileStored(
-        string fileName,
-        string fileType,
-        bytes fileContent,
+        string name,
+        string dataType,
+        string content,
         uint256 timestamp
     );
     // 初始化函数
@@ -19,15 +19,14 @@ contract DataStorage is Utils,Storages  {
     function storeFile(
         string memory name,
         string memory dataType,
-        string memory dataContent
+        string memory content
     ) public {
         generateKeys();
-        bytes memory content = encrypt(dataContent);
         uint256 timestamp = block.timestamp; //获取当前区块链时间戳
         StorageInfo memory info =  StorageInfo({
             name: name,
             dataType: dataType,
-            content: string(content),
+            content: content,
             timestamp: timestamp
         });
         setStorage(info);
