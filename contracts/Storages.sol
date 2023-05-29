@@ -2,13 +2,14 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 contract Storages {
-
     // 构建文件内容存储结构体
     struct StorageInfo {
-        string name;          // 聊天信息备注 便于查询
+        string name; // 聊天信息备注 便于查询
         string dataType;
-        string content;     // 聊天内容
-        uint256 timestamp;  // 时间戳
+        string content; // 聊天内容
+        bytes32 md5;
+        address pubAddress;
+        uint256 timestamp; // 时间戳
     }
 
     // uint256 记录键值，减少大面积查询，避免耽误查询时间
@@ -26,7 +27,10 @@ contract Storages {
         return timelist[key];
     }
 
-    function getStorage(address key,uint256 tsp) internal view returns (StorageInfo memory) {
+    function getStorage(
+        address key,
+        uint256 tsp
+    ) internal view returns (StorageInfo memory) {
         return storage_datas[key][tsp];
     }
 }

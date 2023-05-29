@@ -3,19 +3,21 @@ pragma solidity >=0.8.0 <0.9.0;
 
 contract ShareData {
 
-    mapping(address => mapping(string => uint256)) private share_limit;
+    mapping(address => mapping(bytes32 => uint256)) private share_limit;
 
-    mapping(string => uint256) private share_all;
+    mapping(bytes32 => uint256) private share_all;
 
-    function shareSetting(address addr,string memory md5,uint256 endTime) public {
+    // 设置共享权限
+    function shareSetting(address addr,bytes32 md5,uint256 endTime) public {
         if (addr != address(0)) {
             share_limit[addr][md5] = endTime;
         }else{
             share_all[md5] = endTime;
         }
     }
-     
-    function getAuth(address addr,string memory md5) public view returns(bool) {
+
+    // 获取md5对应的文件读取权限
+    function getAuth(address addr,bytes32 md5) public view returns(bool) {
         uint256 limitTime = share_limit[addr][md5];
         uint256 allTime = share_all[md5];
         bool isOpen = limitTime != 0 && (limitTime == 1 || limitTime > block.timestamp);
