@@ -46,7 +46,7 @@ contract DataStorage is Utils, Storages {
     ) public view returns (StorageInfo[] memory) {
         uint256[] memory kl = getTimelist(msg.sender);
         if (startTime < endTime && endTime > 0) {
-            kl = getListIndex(startTime, endTime);
+            kl = queryIndex(startTime, endTime);
             if (kl.length == 0) {
                 return new StorageInfo[](0);
             }
@@ -82,7 +82,7 @@ contract DataStorage is Utils, Storages {
         uint256[] memory kl = getTimelist(msg.sender);
         // 根据时间遍历查询key值
         if (startTime < endTime && endTime > 0) {
-            kl = getListIndex(startTime, endTime);
+            kl = queryIndex(startTime, endTime);
             if (kl.length == 0) {
                 return new StorageInfo[](0);
             }
@@ -168,7 +168,7 @@ contract DataStorage is Utils, Storages {
     }
 
     // 根据时间进行查询
-    function getListIndex(
+    function queryIndex(
         uint256 startTime,
         uint256 endTime
     ) internal view returns (uint256[] memory) {
