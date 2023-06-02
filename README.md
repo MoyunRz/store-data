@@ -4,12 +4,16 @@
 
 ## 目录介绍
 
-```
+```shell
  |---contracts
       |--- ChatStorage.sol 存储聊天内容合约 
       |--- FileStorage.sol 文件内容存储合约
       |--- Utils.sol 工具合约 加密工具、内容匹配工具
-``
+```
+
+## 设计
+
+[流程图](./doc/合约存取共享.md)
 
 ## 项目依赖
 
