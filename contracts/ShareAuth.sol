@@ -2,23 +2,56 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 contract ShareAuth {
-
-    mapping(address => mapping(bytes32 => uint256)) private share_limit;
-
+    // 分享限制
+    mapping(bytes32 => mapping(address => uint256)) private share_limit;
+    // 分享没有限制
     mapping(bytes32 => uint256) private share_all;
+    // 直接关闭分享
+    mapping(bytes32 => bool) private is_open;
 
     // 设置共享权限
-    function setAuth(address addr,bytes32 md5,uint256 endTime) public {
-        if (addr != address(0)) {
-            share_limit[addr][md5] = endTime;
-        }else{
-            share_all[md5] = endTime;
+    function setLimitAuth(address[] memory addr,bytes32 md5,uint256 endTime) public {
+
+        require(endTime > 0 ,"endTime need than 0");
+        require(addr.length > 0 ,"address is not null");
+        require(md5.length > 0 ,"md5 is not null");
+
+        if (share_limit[md5][msg.sender] ==0 ) {
+            share_limit[md5][msg.sender] == 1;
+        }
+        for(uint256 i = 0; i < addr.length;i++){
+            share_limit[md5][addr[i]] == endTime;
+        }
+        is_open[md5] = true;
+    }
+
+    function setOpenAuth(bytes32 md5,uint256 endTime) public {
+        require(endTime > 0 ,"endTime need than 0");
+        require(md5.length > 0 ,"md5 is not null");
+        if (share_limit[md5][msg.sender] ==0 ) {
+            share_limit[md5][msg.sender] == 1;
+        }
+        share_all[md5] == endTime;
+        is_open[md5] = true;
+    }
+
+    // 获取md5对应的文件读取权限
+    function cencelShare(address[] memory addr,bytes32 md5) public {
+        require(md5.length > 0 ,"md5 is not null");
+        share_all[md5] == block.timestamp;
+        if(addr.length == 0) {
+            is_open[md5] = false;
+            return;
+        }
+        for(uint256 i = 0; i < addr.length;i++){
+            share_limit[md5][addr[i]] = block.timestamp - 1;
         }
     }
 
     // 获取md5对应的文件读取权限
     function verifyAuth(address addr,bytes32 md5) public view returns(bool) {
-        uint256 limitTime = share_limit[addr][md5];
+        if(!is_open[md5]) return false;
+        uint256 limitTime = share_limit[md5][addr];
         uint256 allTime = share_all[md5];
         bool isOpen = limitTime != 0 && (limitTime == 1 || limitTime > block.timestamp);
         isOpen = allTime != 0 && (allTime == 1 || allTime > block.timestamp);

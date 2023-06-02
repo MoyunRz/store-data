@@ -5,10 +5,10 @@ contract Storages {
     // 构建文件内容存储结构体
     struct StorageInfo {
         string name; // 聊天信息备注 便于查询
-        string dataType;
+        string dataType; // 数据类型
         string content; // 聊天内容
-        bytes32 md5;
-        address pubAddress;
+        bytes32 md5; // 内容md5
+        address pubAddress; // 公钥
         uint256 timestamp; // 时间戳
     }
 
