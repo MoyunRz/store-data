@@ -8,7 +8,7 @@ contract ShareAuth {
     mapping(bytes32 => uint256) private share_all;
 
     // 设置共享权限
-    function shareSetting(address addr,bytes32 md5,uint256 endTime) public {
+    function setAuth(address addr,bytes32 md5,uint256 endTime) public {
         if (addr != address(0)) {
             share_limit[addr][md5] = endTime;
         }else{
@@ -17,7 +17,7 @@ contract ShareAuth {
     }
 
     // 获取md5对应的文件读取权限
-    function getAuth(address addr,bytes32 md5) public view returns(bool) {
+    function verifyAuth(address addr,bytes32 md5) public view returns(bool) {
         uint256 limitTime = share_limit[addr][md5];
         uint256 allTime = share_all[md5];
         bool isOpen = limitTime != 0 && (limitTime == 1 || limitTime > block.timestamp);
