@@ -10,7 +10,7 @@ contract ShareAuth {
     mapping(bytes32 => bool) private is_open;
 
     // 设置共享权限
-    function setLimitAuth(address[] memory addr,bytes32 md5,uint256 endTime) public {
+    function setLimitAuth(address[] memory addr,bytes32 md5,uint256 endTime) internal {
 
         require(endTime > 0 ,"endTime need than 0");
         require(addr.length > 0 ,"address is not null");
@@ -25,7 +25,7 @@ contract ShareAuth {
         is_open[md5] = true;
     }
 
-    function setOpenAuth(bytes32 md5,uint256 endTime) public {
+    function setOpenAuth(bytes32 md5,uint256 endTime) internal {
         require(endTime > 0 ,"endTime need than 0");
         require(md5.length > 0 ,"md5 is not null");
         if (share_limit[md5][msg.sender] ==0 ) {
@@ -36,7 +36,7 @@ contract ShareAuth {
     }
 
     // 获取md5对应的文件读取权限
-    function cencelShare(address[] memory addr,bytes32 md5) public {
+    function cencelShare(address[] memory addr,bytes32 md5) internal {
         require(md5.length > 0 ,"md5 is not null");
         share_all[md5] == block.timestamp;
         if(addr.length == 0) {
@@ -49,7 +49,7 @@ contract ShareAuth {
     }
 
     // 获取md5对应的文件读取权限
-    function verifyAuth(address addr,bytes32 md5) public view returns(bool) {
+    function verifyAuth(address addr,bytes32 md5) internal view returns(bool) {
         if(!is_open[md5]) return false;
         uint256 limitTime = share_limit[md5][addr];
         uint256 allTime = share_all[md5];

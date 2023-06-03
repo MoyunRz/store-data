@@ -4,8 +4,8 @@ pragma solidity >=0.8.0 <0.9.0;
 
 contract Utils {
     
-    mapping(address => bytes32) keysMap;
-    mapping(address => uint256[]) userIndexMap;
+    mapping(address => bytes32) private keysMap;
+    mapping(address => uint256[]) private userIndexMap;
 
     constructor() {}
     // 匹配函数
@@ -39,25 +39,6 @@ contract Utils {
     function calculateMD5(string memory _text) public pure returns (bytes32) {
         bytes32 hash = keccak256(bytes(_text));
         return hash;
-    }
-
-
-    function generateKeys() public returns (string memory) {
-
-        if (keysMap[msg.sender] != 0) {
-            return "Cannot be recreated";
-        }
-        // uint256 nonce = 
-        bytes32 key = keccak256(
-            abi.encodePacked(
-                block.timestamp,
-                msg.sender,
-                blockhash(block.number - 1),
-                block.gaslimit
-            )
-        );
-        keysMap[msg.sender] = key;
-        return "Success";
     }
 
     function encrypt(string memory str) public view returns (bytes memory) {
