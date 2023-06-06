@@ -2,8 +2,8 @@
 pragma solidity >=0.8.0 <0.9.0;
 import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "./Storages.sol";
-import "./Utils.sol";
-contract DataStorage is Utils, Storages,AccessControl {
+
+contract DataStorage is  Storages,AccessControl {
     event FileStored(
         string name,
         string dataType,
@@ -24,7 +24,7 @@ contract DataStorage is Utils, Storages,AccessControl {
         string memory content,
         address pubAddress
     ) public {
-        bytes32 md5 = _calculateMD5(content);
+        bytes32 md5 =  keccak256(bytes(content));
         uint256 timestamp = block.timestamp; //获取当前区块链时间戳
         StorageInfo memory info = StorageInfo({
             name: name,
