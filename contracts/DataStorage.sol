@@ -4,7 +4,7 @@ import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "./Storages.sol";
 
 contract DataStorage is  Storages,AccessControl {
-    event FileStored(
+    event dataStored(
         string name,
         string dataType,
         string content,
@@ -18,7 +18,7 @@ contract DataStorage is  Storages,AccessControl {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
     // 存储文件内容
-    function storeFile(
+    function storeData(
         string memory name,
         string memory dataType,
         string memory content,
@@ -35,7 +35,7 @@ contract DataStorage is  Storages,AccessControl {
             timestamp: timestamp
         });
         _setStorage(info, msg.sender);
-        emit FileStored(name, dataType, content, md5, pubAddress, timestamp);
+        emit dataStored(name, dataType, content, md5, pubAddress, timestamp);
     }
 
     // 根据时间 名字查询
