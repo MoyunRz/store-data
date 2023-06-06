@@ -36,12 +36,12 @@ contract Utils {
         }
     }
 
-    function calculateMD5(string memory _text) public pure returns (bytes32) {
+    function _calculateMD5(string memory _text) internal pure returns (bytes32) {
         bytes32 hash = keccak256(bytes(_text));
         return hash;
     }
 
-    function encrypt(string memory str) public view returns (bytes memory) {
+    function _encrypt(string memory str) internal view returns (bytes memory) {
         if (keysMap[msg.sender] == 0) {
             return bytes("Please create a key");
         }
@@ -55,7 +55,7 @@ contract Utils {
         return abi.encodePacked(iv, ciphertext);
     }
 
-    function decrypt(bytes memory data) public view returns (string memory) {
+    function _decrypt(bytes memory data) internal view returns (string memory) {
         if (keysMap[msg.sender] == 0) {
             return "Please create a key";
         }
