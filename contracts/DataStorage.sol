@@ -3,7 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "./Storages.sol";
 
-contract DataStorage is  Storages,AccessControl {
+contract DataStorage is Storages, AccessControl {
     event dataStored(
         string name,
         string dataType,
@@ -17,6 +17,7 @@ contract DataStorage is  Storages,AccessControl {
         // 构建默认的管理员权限
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
+
     // 存储文件内容
     function storeData(
         string memory name,
@@ -24,7 +25,7 @@ contract DataStorage is  Storages,AccessControl {
         string memory content,
         address pubAddress
     ) public {
-        bytes32 md5 =  keccak256(bytes(content));
+        bytes32 md5 = keccak256(bytes(content));
         uint256 timestamp = block.timestamp; //获取当前区块链时间戳
         StorageInfo memory info = StorageInfo({
             name: name,
@@ -80,7 +81,7 @@ contract DataStorage is  Storages,AccessControl {
     ) public view onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256[] memory) {
         return _getTimelist(sender);
     }
-    
+
     function FindByTsp(
         uint256 tsp,
         address sender
