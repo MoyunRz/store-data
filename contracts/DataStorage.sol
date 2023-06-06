@@ -3,7 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "./Storages.sol";
 
-contract DataStorage is Utils, Storages,AccessControl {
+contract DataStorage is Storages,AccessControl {
     event FileStored(
         string name,
         string dataType,
@@ -74,13 +74,13 @@ contract DataStorage is Utils, Storages,AccessControl {
     ) public view returns (StorageInfo memory) {
         return findDataByTsp(tsp, msg.sender);
     }
-    
+
     function FindHistoryList(
         address sender
     ) public view onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256[] memory) {
         return getTimelist(sender);
     }
-   
+    
     function FindByTsp(
         uint256 tsp,
         address sender
