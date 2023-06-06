@@ -25,7 +25,8 @@ contract ShareAuth {
         }
         is_open[md5] = true;
     }
-
+    
+    // 设置开启全新
     function setOpenAuth(bytes32 md5,uint256 endTime) internal {
         require(endTime > 0 ,"endTime need than 0");
         require(md5.length > 0 ,"md5 is not null");
@@ -60,11 +61,11 @@ contract ShareAuth {
     }
 
     // 利用ECDSA验证签名并mint
-    function verify(string memory _msg, bytes memory _signature)
-    public view returns(bool)
-    {
-        bytes32 _msgHash = getMessageHash(_msg); // 将_account和_tokenId打包消息
-        bytes32 _ethSignedMessageHash = ECDSA.toEthSignedMessageHash(_msgHash); // 计算以太坊签名消息
+    function verify(string memory _msg, bytes memory _signature) public view returns(bool) {
+         // 将_account和_tokenId打包消息
+        bytes32 _msgHash = getMessageHash(_msg);
+        // 计算以太坊签名消息
+        bytes32 _ethSignedMessageHash = ECDSA.toEthSignedMessageHash(_msgHash); 
         address recovered = ECDSA.recover(_ethSignedMessageHash, _signature);
         return recovered == msg.sender;
     }
