@@ -2,8 +2,14 @@
 pragma solidity >=0.8.0 <0.9.0;
 import "../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 import "./Storages.sol";
+import "./ShareAuth.sol";
 
-contract DataStorage is Storages, AccessControl {
+contract DataStorage is Storages, ShareAuth, AccessControl {
+    enum LimitEnum {
+        ALL,
+        LIMIT
+    }
+
     event dataStored(
         string name,
         string dataType,
@@ -32,7 +38,7 @@ contract DataStorage is Storages, AccessControl {
             dataType: dataType,
             content: content,
             md5: md5,
-            pubAddress: msg.sender,
+            pubAddress: pubAddress,
             timestamp: timestamp
         });
         _setStorage(info, msg.sender);
@@ -87,5 +93,42 @@ contract DataStorage is Storages, AccessControl {
         address sender
     ) public view onlyRole(DEFAULT_ADMIN_ROLE) returns (StorageInfo memory) {
         return _findDataByTsp(tsp, sender);
+    }
+
+    function setLimitAuth(
+        address[] memory addr,
+        uint256 tsp,
+        uint256 endTime,
+        LimitEnum enumType
+    ) public {
+        StorageInfo memory res = _findDataByTsp(tsp, msg.sender);
+        if (enumType == LimitEnum.ALL) {
+            _setOpenAllAuth(res.md5, tsp, endTime);
+        } else {
+            _setLimitAuth(addr, res.md5, tsp, endTime);
+        }
+    }
+
+    function setLimitAuth(
+        address[] memory addr,
+        bytes32 md5,
+        LimitEnum enumType
+    ) public {
+        if (enumType == LimitEnum.ALL) {
+            _cencelAllShare(md5);
+        } else {
+            _cencelShare(addr, md5);
+        }
+    }
+
+    function findShareData(
+        bytes32 md5,
+        bytes memory _signature
+    ) public view returns (StorageInfo memory) {
+        require(verify(md5, _signature), "sender is not signer");
+        require(_verifyAuth(msg.sender, md5), "You do not have view permission");
+        uint256 tsp = _getIndex(md5);
+        address _onwer = _getOnwer(md5);
+        return _findDataByTsp(tsp, _onwer);
     }
 }

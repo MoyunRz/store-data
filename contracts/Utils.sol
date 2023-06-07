@@ -12,7 +12,7 @@ contract Utils {
     function contains(
         string memory str,
         string memory substr
-    ) public pure returns (bool) {
+    ) internal pure returns (bool) {
         bytes memory bStr = bytes(str);
         bytes memory bSubstr = bytes(substr);
         if (bSubstr.length > bStr.length) {
