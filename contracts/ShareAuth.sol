@@ -63,19 +63,10 @@ contract ShareAuth {
     // 利用ECDSA验证签名并mint
     function verify(string memory _msg, bytes memory _signature) public view returns(bool) {
          // 将_account和_tokenId打包消息
-        bytes32 _msgHash = getMessageHash(_msg);
+        bytes32 _msgHash = keccak256(bytes(_msg));
         // 计算以太坊签名消息
         bytes32 _ethSignedMessageHash = ECDSA.toEthSignedMessageHash(_msgHash); 
         address recovered = ECDSA.recover(_ethSignedMessageHash, _signature);
         return recovered == msg.sender;
-    }
-
-    /*
-     * 将mint地址（address类型）和tokenId（uint256类型）拼成消息msgHash
-       * _msg: 消息
-     * 对应的消息: keccak256 后的hash
-     */
-    function getMessageHash(string memory _msg) public pure returns(bytes32){
-        return keccak256(bytes(_msg));
     }
 }
