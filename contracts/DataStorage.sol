@@ -15,8 +15,9 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         string dataType,
         string content,
         bytes32 md5,
-        address pubAddress,
-        uint256 timestamp
+        uint256 timestamp,
+        bytes ownerPub,
+        bytes keyPub
     );
 
     constructor() {
@@ -26,50 +27,54 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
 
     // 存储文件内容
     function storeData(
-        string memory name,
-        string memory dataType,
-        string memory content,
-        address pubAddress
+        string memory _name,
+        string memory _dataType,
+        string memory _content,
+        bytes32 _md5,
+        bytes memory _ownerPub,
+        bytes memory _keyPub
     ) public {
-        bytes32 md5 = keccak256(bytes(content));
+
+        require(_md5 == keccak256(bytes(_content)),"content is invalid");
         uint256 timestamp = block.timestamp; //获取当前区块链时间戳
         StorageInfo memory info = StorageInfo({
-            name: name,
-            dataType: dataType,
-            content: content,
-            md5: md5,
-            pubAddress: pubAddress,
-            timestamp: timestamp
+            name: _name,
+            dataType: _dataType,
+            content: _content,
+            md5: _md5,
+            timestamp: timestamp,
+            ownerPub: _ownerPub,
+            keyPub: _keyPub
         });
         _setStorage(info, msg.sender);
-        emit dataStored(name, dataType, content, md5, pubAddress, timestamp);
+        emit dataStored(_name, _dataType, _content, _md5,timestamp,_ownerPub, _keyPub );
     }
 
     // 根据时间 名字查询
     function FindHistory(
-        string memory fileName,
-        uint256 startTime,
-        uint256 endTime,
-        uint256 startIndex,
-        uint256 size
+        string memory _fileName,
+        uint256 _startTime,
+        uint256 _endTime,
+        uint256 _startIndex,
+        uint256 _size
     ) public view returns (StorageInfo[] memory) {
         return
             _findDataHistory(
-                fileName,
-                startTime,
-                endTime,
-                startIndex,
-                size,
+                _fileName,
+                _startTime,
+                _endTime,
+                _startIndex,
+                _size,
                 msg.sender
             );
     }
 
     function FindStorage(
-        string memory fileName,
-        uint256 startTime,
-        uint256 endTime
+        string memory _fileName,
+        uint256 _startTime,
+        uint256 _endTime
     ) public view returns (StorageInfo[] memory) {
-        return _findDataStorage(fileName, startTime, endTime, msg.sender);
+        return _findDataStorage(_fileName, _startTime, _endTime, msg.sender);
     }
 
     function FindOwnerList() public view returns (uint256[] memory) {
@@ -77,58 +82,58 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
     }
 
     function FindOwnerDataByTsp(
-        uint256 tsp
+        uint256 _tsp
     ) public view returns (StorageInfo memory) {
-        return _findDataByTsp(tsp, msg.sender);
+        return _findDataByTsp(_tsp, msg.sender);
     }
 
     function FindHistoryList(
-        address sender
+        address _sender
     ) public view onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256[] memory) {
-        return _getTimelist(sender);
+        return _getTimelist(_sender);
     }
 
     function FindByTsp(
-        uint256 tsp,
-        address sender
+        uint256 _tsp,
+        address _sender
     ) public view onlyRole(DEFAULT_ADMIN_ROLE) returns (StorageInfo memory) {
-        return _findDataByTsp(tsp, sender);
+        return _findDataByTsp(_tsp, _sender);
     }
 
     function setLimitAuth(
-        address[] memory addr,
-        uint256 tsp,
-        uint256 endTime,
-        LimitEnum enumType
+        address[] memory _addr,
+        uint256 _tsp,
+        uint256 _endTime,
+        LimitEnum _enumType
     ) public {
-        StorageInfo memory res = _findDataByTsp(tsp, msg.sender);
-        if (enumType == LimitEnum.ALL) {
-            _setOpenAllAuth(res.md5, tsp, endTime);
+        StorageInfo memory res = _findDataByTsp(_tsp, msg.sender);
+        if (_enumType == LimitEnum.ALL) {
+            _setOpenAllAuth(res.md5, _tsp, _endTime);
         } else {
-            _setLimitAuth(addr, res.md5, tsp, endTime);
+            _setLimitAuth(_addr, res.md5, _tsp, _endTime);
         }
     }
 
     function setLimitAuth(
-        address[] memory addr,
-        bytes32 md5,
-        LimitEnum enumType
+        address[] memory _addr,
+        bytes32 _md5,
+        LimitEnum _enumType
     ) public {
-        if (enumType == LimitEnum.ALL) {
-            _cencelAllShare(md5);
+        if (_enumType == LimitEnum.ALL) {
+            _cencelAllShare(_md5);
         } else {
-            _cencelShare(addr, md5);
+            _cencelShare(_addr,_md5);
         }
     }
 
     function findShareData(
-        bytes32 md5,
+        bytes32 _md5,
         bytes memory _signature
     ) public view returns (StorageInfo memory) {
-        require(verify(md5, _signature), "sender is not signer");
-        require(_verifyAuth(msg.sender, md5), "You do not have view permission");
-        uint256 tsp = _getIndex(md5);
-        address _onwer = _getOnwer(md5);
+        require(verify(_md5, _signature), "sender is not signer");
+        require(_verifyAuth(msg.sender, _md5), "You do not have view permission");
+        uint256 tsp = _getIndex(_md5);
+        address _onwer = _getOnwer(_md5);
         return _findDataByTsp(tsp, _onwer);
     }
 }
