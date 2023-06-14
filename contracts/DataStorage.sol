@@ -34,9 +34,9 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         bytes memory _ownerPub,
         bytes memory _keyPub
     ) public {
-
         require(_md5 == keccak256(bytes(_content)),"content is invalid");
-        uint256 timestamp = block.timestamp; //获取当前区块链时间戳
+        //获取当前区块链时间戳
+        uint256 timestamp = block.timestamp; 
         StorageInfo memory info = StorageInfo({
             name: _name,
             dataType: _dataType,
@@ -47,7 +47,7 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
             keyPub: _keyPub
         });
         _setStorage(info, msg.sender);
-        emit dataStored(_name, _dataType, _content, _md5,timestamp,_ownerPub, _keyPub );
+        emit dataStored(_name, _dataType, _content, _md5,timestamp,_ownerPub, _keyPub);
     }
 
     // 根据时间 名字查询
@@ -68,7 +68,8 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
                 msg.sender
             );
     }
-
+    
+    // 查找
     function FindStorage(
         string memory _fileName,
         uint256 _startTime,
@@ -77,22 +78,26 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         return _findDataStorage(_fileName, _startTime, _endTime, msg.sender);
     }
 
+    // 查找拥有的文件列表
     function FindOwnerList() public view returns (uint256[] memory) {
         return _getTimelist(msg.sender);
     }
 
+    // 根据时间戳查询
     function FindOwnerDataByTsp(
         uint256 _tsp
     ) public view returns (StorageInfo memory) {
         return _findDataByTsp(_tsp, msg.sender);
     }
 
+    // 查询用户的文件列表
     function FindHistoryList(
         address _sender
     ) public view onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256[] memory) {
         return _getTimelist(_sender);
     }
 
+    // 根据时间戳查询
     function FindByTsp(
         uint256 _tsp,
         address _sender
@@ -100,6 +105,7 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         return _findDataByTsp(_tsp, _sender);
     }
 
+    // 设置共享权限
     function setLimitAuth(
         address[] memory _addr,
         uint256 _tsp,
@@ -114,7 +120,8 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         }
     }
 
-    function setLimitAuth(
+    // 取消分享
+    function _cencelLimit(
         address[] memory _addr,
         bytes32 _md5,
         LimitEnum _enumType
@@ -126,6 +133,7 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         }
     }
 
+    // 查询分享的数据
     function findShareData(
         bytes32 _md5,
         bytes memory _signature
