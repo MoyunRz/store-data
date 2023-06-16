@@ -11,13 +11,13 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
     }
 
     event dataStored(
-        string name, // 数据名
-        string dataType, // 数据类型
-        string content, // 加密内容
-        bytes32 md5, // 内容md5
-        uint256 timestamp, // 时间戳
-        bytes ownerPub, // 拥有者的加密公钥
-        bytes keyPub // 另一个加密公钥
+        string name,        // 数据名
+        string dataType,    // 数据类型
+        string content,     // 加密内容
+        bytes32 md5,        // 内容md5
+        uint256 timestamp,  // 时间戳
+        bytes ownerPub,     // 拥有者的加密公钥
+        bytes keyPub        // 另一个加密公钥
     );
 
     constructor() {
@@ -36,13 +36,13 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
     ) public {
         require(_md5 == keccak256(bytes(_content)), "content is invalid");
         //获取当前区块链时间戳
-        uint256 timestamp = block.timestamp;
+        uint256 _timestamp = block.timestamp;
         StorageInfo memory info = StorageInfo({
             name: _name,
             dataType: _dataType,
             content: _content,
             md5: _md5,
-            timestamp: timestamp,
+            timestamp: _timestamp,
             ownerPub: _ownerPub,
             keyPub: _keyPub
         });
@@ -52,7 +52,7 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
             _dataType,
             _content,
             _md5,
-            timestamp,
+            _timestamp,
             _ownerPub,
             _keyPub
         );
