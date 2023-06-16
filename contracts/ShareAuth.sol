@@ -23,7 +23,7 @@ contract ShareAuth {
         shareOwner[_md5] = msg.sender;
         shareTsp[_md5]= _tsp;
         for(uint256 i = 0; i < _addr.length;i++){
-            shareLimit[_md5][_addr[i]] == _endTime;
+            shareLimit[_md5][_addr[i]] = _endTime;
         }
         isOpen[_md5] = true;
     }
@@ -34,14 +34,14 @@ contract ShareAuth {
         require(_md5.length > 0 ,"md5 is not null");
         shareOwner[_md5] = msg.sender;
         shareTsp[_md5]= _tsp;
-        shareAll[_md5] == _endTime;
+        shareAll[_md5] = _endTime;
         isOpen[_md5] = true;
     }
 
     // 获取md5对应的文件读取权限
     function _cencelShare(address[] memory _addr,bytes32 _md5) internal {
         require(_md5.length > 0 ,"md5 is not null");
-        shareAll[_md5] == block.timestamp;
+        shareAll[_md5] = block.timestamp;
         for(uint256 i = 0; i < _addr.length;i++){
             shareLimit[_md5][_addr[i]] = block.timestamp - 1;
         }
@@ -50,7 +50,7 @@ contract ShareAuth {
     // 获取md5对应的文件读取权限
     function _cencelAllShare(bytes32 _md5) internal {
         require(_md5.length > 0 ,"md5 is not null");
-        shareAll[_md5] == block.timestamp;
+        shareAll[_md5] = block.timestamp;
         isOpen[_md5] = false;
     }
 
@@ -60,9 +60,7 @@ contract ShareAuth {
         if(!isOpen[_md5]) return false;
         uint256 limitTime = shareLimit[_md5][_addr];
         uint256 allTime = shareAll[_md5];
-        bool isOpen = limitTime != 0 && (limitTime == 1 || limitTime > block.timestamp);
-        isOpen = allTime != 0 && (allTime == 1 || allTime > block.timestamp);
-        return  isOpen;
+        return  (limitTime != 0 && (limitTime == 1 || limitTime > block.timestamp)|| allTime != 0 && (allTime == 1 || allTime > block.timestamp));
     }
 
     // 利用ECDSA验证签名并mint
