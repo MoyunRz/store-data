@@ -47,15 +47,7 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
             keyPub: _keyPub
         });
         _setStorage(info, msg.sender);
-        emit dataStored(
-            _name,
-            _dataType,
-            _content,
-            _md5,
-            _timestamp,
-            _ownerPub,
-            _keyPub
-        );
+        emit dataStored(_name, _dataType, _content, _md5, _timestamp, _ownerPub, _keyPub);
     }
 
     // 根据时间 名字查询
@@ -66,15 +58,7 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         uint256 _startIndex,
         uint256 _size
     ) public view returns (StorageInfo[] memory) {
-        return
-            _findDataHistory(
-                _fileName,
-                _startTime,
-                _endTime,
-                _startIndex,
-                _size,
-                msg.sender
-            );
+        return _findDataHistory(_fileName,  _startTime, _endTime, _startIndex, _size, msg.sender);
     }
 
     // 查找
