@@ -6,7 +6,7 @@
 
 ```shell
  |---contracts
-      |--- DataStorage.sol 查询、存储内容合约 
+      |--- DataStorage.sol 查询、存储内容对外操作合约 
       |--- ShareAuth.sol 内容、文件共享合约
       |--- Storages.sol 查询、存储内容具体实现合约 
       |--- Utils.sol 工具合约 
