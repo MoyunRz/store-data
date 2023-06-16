@@ -11,13 +11,13 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
     }
 
     event dataStored(
-        string name,
-        string dataType,
-        string content,
-        bytes32 md5,
-        uint256 timestamp,
-        bytes ownerPub,
-        bytes keyPub
+        string name, // 数据名
+        string dataType, // 数据类型
+        string content, // 加密内容
+        bytes32 md5, // 内容md5
+        uint256 timestamp, // 时间戳
+        bytes ownerPub, // 拥有者的加密公钥
+        bytes keyPub // 另一个加密公钥
     );
 
     constructor() {
@@ -34,9 +34,9 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         bytes memory _ownerPub,
         bytes memory _keyPub
     ) public {
-        require(_md5 == keccak256(bytes(_content)),"content is invalid");
+        require(_md5 == keccak256(bytes(_content)), "content is invalid");
         //获取当前区块链时间戳
-        uint256 timestamp = block.timestamp; 
+        uint256 timestamp = block.timestamp;
         StorageInfo memory info = StorageInfo({
             name: _name,
             dataType: _dataType,
@@ -47,7 +47,15 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
             keyPub: _keyPub
         });
         _setStorage(info, msg.sender);
-        emit dataStored(_name, _dataType, _content, _md5,timestamp,_ownerPub, _keyPub);
+        emit dataStored(
+            _name,
+            _dataType,
+            _content,
+            _md5,
+            timestamp,
+            _ownerPub,
+            _keyPub
+        );
     }
 
     // 根据时间 名字查询
@@ -68,7 +76,7 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
                 msg.sender
             );
     }
-    
+
     // 查找
     function FindStorage(
         string memory _fileName,
@@ -129,7 +137,7 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         if (_enumType == LimitEnum.ALL) {
             _cencelAllShare(_md5);
         } else {
-            _cencelShare(_addr,_md5);
+            _cencelShare(_addr, _md5);
         }
     }
 
@@ -139,7 +147,10 @@ contract DataStorage is Storages, ShareAuth, AccessControl {
         bytes memory _signature
     ) public view returns (StorageInfo memory) {
         require(verify(_md5, _signature), "sender is not signer");
-        require(_verifyAuth(msg.sender, _md5), "You do not have view permission");
+        require(
+            _verifyAuth(msg.sender, _md5),
+            "You do not have view permission"
+        );
         uint256 tsp = _getIndex(_md5);
         address _onwer = _getOnwer(_md5);
         return _findDataByTsp(tsp, _onwer);

@@ -6,9 +6,10 @@
 
 ```shell
  |---contracts
-      |--- ChatStorage.sol 存储聊天内容合约 
-      |--- FileStorage.sol 文件内容存储合约
-      |--- Utils.sol 工具合约 加密工具、内容匹配工具
+      |--- DataStorage.sol 查询、存储内容合约 
+      |--- ShareAuth.sol 内容、文件共享合约
+      |--- Storages.sol 查询、存储内容具体实现合约 
+      |--- Utils.sol 工具合约 
 ```
 
 ## 设计
